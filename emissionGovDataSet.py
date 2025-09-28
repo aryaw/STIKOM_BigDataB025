@@ -94,7 +94,7 @@ webbrowser.open(fileScatterName)
 
 # ------------- regret
 # drop empty rows
-df_reg = df.dropna(subset=['report_year', 'substance_name', 'primary_anzsic_class_name'])
+df = df.dropna(subset=['report_year', 'substance_name', 'primary_anzsic_class_name'])
 
 print(f"\n✅ Start cast data \n")
 # cast all data as a string
@@ -122,41 +122,49 @@ probs_industry = model_industry.predict_proba(X)
 probs_df_industry = pd.DataFrame(probs_industry, columns=le_industry.classes_)
 probs_df_industry['report_year'] = df['report_year'].values
 
-print(f"\n✅ Start concat \n")
-probs_df = pd.concat([probs_df_substance.drop(columns='report_year'),
-                      probs_df_industry.drop(columns='report_year')],
-                     axis=1)
-probs_df['report_year'] = df['report_year'].values
-
-# sortby year of report
-df = df.sort_values(by='report_year', ascending=True)
-
-# get top 10 substance
+# -------------------------------
+# Top 10 substances
+# -------------------------------
 top10_substance = df['substance_name'].value_counts().nlargest(10).index
 for sub in top10_substance:
-    df[f'prob_{sub}'] = probs_df[sub]
+    df[f'prob_{sub}'] = probs_df_substance[sub]
 
-# get top 10 industry
-top10_industry = df['primary_anzsic_class_name'].value_counts().nlargest(10).index
-for sub in top10_industry:
-    df[f'prob_{sub}'] = probs_df[sub]
+y_substance_columns = [f'prob_{s}' for s in top10_substance]
 
-print(f"\n✅ Get Top 10 industry & substance \n")
-y_columns = [f'prob_{s}' for s in top10_substance] + [f'prob_{i}' for i in top10_industry]
-
-fig_combined_substance_industry = px.line(
+fig_substance = px.line(
     df,
     x='report_year',
-    y=y_columns,
-    title='Predicted Probability of Top 10 Substances & Top 10 Industries Over Years',
+    y=y_substance_columns,
+    title='Predicted Probability of Top 10 Substances Over Years',
     labels={'value':'Predicted Probability', 'report_year':'Year'}
 )
 
-file_combined_substance_industry_name = os.path.join(output_dir, f"regrt_combined_substance_industry_{fileTimeStamp}.html")
-fig_combined_substance_industry.write_html(file_combined_substance_industry_name, include_plotlyjs='cdn', full_html=True)
+file_substance = os.path.join(output_dir, f"regrt_top10_substances_{fileTimeStamp}.html")
+fig_substance.write_html(file_substance, include_plotlyjs='cdn', full_html=True)
+print(f"\n✅ Substance chart saved → {file_substance}")
+webbrowser.open(file_substance)
 
-print(f"\n✅ Finish Pobrality Render → {file_combined_substance_industry_name}\n")
-webbrowser.open(file_combined_substance_industry_name)
+# -------------------------------
+# Top 10 industries
+# -------------------------------
+top10_industry = df['primary_anzsic_class_name'].value_counts().nlargest(10).index
+for ind in top10_industry:
+    df[f'prob_{ind}'] = probs_df_industry[ind]
+
+y_industry_columns = [f'prob_{i}' for i in top10_industry]
+
+fig_industry = px.line(
+    df,
+    x='report_year',
+    y=y_industry_columns,
+    title='Predicted Probability of Top 10 Industries Over Years',
+    labels={'value':'Predicted Probability', 'report_year':'Year'}
+)
+
+file_industry = os.path.join(output_dir, f"regrt_top10_industries_{fileTimeStamp}.html")
+fig_industry.write_html(file_industry, include_plotlyjs='cdn', full_html=True)
+print(f"\n✅ Industry chart saved → {file_industry}")
+webbrowser.open(file_industry)
 
 
 # ------------- map distribution

@@ -12,8 +12,8 @@ This project applies **Big Data concepts** to analyze and visualize environmenta
 
 ## 👤 Authors
 
-* I Putu Gede Arya Wiratama - 252011032
-* I WAYAN KARDANA - 252011033
+* I Putu Gede Arya Wiratama - 252011032 - aryawiratama99@gmail.com
+* I WAYAN KARDANA - 252011033 - iwayankardana@gmail.com
 
 ---
 

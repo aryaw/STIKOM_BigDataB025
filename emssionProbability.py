@@ -34,6 +34,9 @@ df['report_year'] = df['report_year'].astype(str)
 df['substance_name'] = df['substance_name'].astype(str)
 df['primary_anzsic_class_name'] = df['primary_anzsic_class_name'].astype(str)
 
+# sort by year asc
+df = df.sort_values('report_year')
+
 le = LabelEncoder()
 X = pd.get_dummies(df['report_year'])
 

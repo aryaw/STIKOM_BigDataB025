@@ -1,37 +1,17 @@
 import os
-from dotenv import load_dotenv
-from sqlalchemy import create_engine
-from urllib.parse import quote_plus
-from datetime import datetime
-
-import webbrowser
 import pandas as pd
-
+import webbrowser
 import folium
 from folium.plugins import MarkerCluster
-
 import plotly.express as px
-
-#import statsmodels.api as sm
-#import statsmodels.formula.api as smf
-
 from sklearn.preprocessing import LabelEncoder
 from sklearn.linear_model import LogisticRegression
 
+from libInternal import variableDump, getConnection, setFileLocation
 
-load_dotenv()
 
-db_host = os.getenv("DB_HOST")
-db_user = os.getenv("DB_USER")
-db_pass = quote_plus(os.getenv("DB_PASS"))
-db_name = os.getenv("DB_NAME")
-
-fileTimeStamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-output_dir = "/home/arya/Documents/Pasca Stikom/BigData/Repo/DataMap/tugas1BigData/assets"
-os.makedirs(output_dir, exist_ok=True) 
-
-conn = create_engine(f"mysql+mysqlconnector://{db_user}:{db_pass}@{db_host}/{db_name}")
-
+fileTimeStamp, output_dir = setFileLocation()
+conn = getConnection()
 df = pd.read_sql("SELECT * FROM emmisions ORDER BY RAND() LIMIT 300000;", conn)
 
 # ------------- distribution

@@ -2,7 +2,7 @@
 
 ## 📌 Project Overview
 
-This project applies **Big Data concepts** to analyze and visualize environmental emission datasets from the Australian Government. It demonstrates how to process, store, and visualize large-scale datasets using Python and modern data tools.
+This project applies **Big Data concepts** to analyze and visualize environmental emission datasets from the Australian Government.
 
 > ⚠️ **Disclaimer:** This project is developed **for educational purposes only**.
 > It is intended as a learning resource to explore Big Data analytics, database integration, and visualization techniques.

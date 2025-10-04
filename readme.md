@@ -43,12 +43,12 @@ Please contact the author to obtain the dataset.
 
 ## 📥 Import Dataset from SQL File
 
-Once you have the dataset file (`emissions_gov_au.sql`), import it into your MySQL database:
+Once you have the dataset file (`emissions_au.sql`), import it into your MySQL database:
 
 ```bash
 # Replace 'your_user' with your MySQL username
 # Replace 'bigdata_db' with your database name
-mysql -u your_user -p bigdata_db < /db/emissions_gov_au.sql
+mysql -u your_user -p bigdata_db < /db/emissions_au.sql
 ```
 
 ---

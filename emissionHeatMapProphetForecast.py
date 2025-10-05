@@ -5,53 +5,21 @@ import folium
 from folium.plugins import MarkerCluster, HeatMap
 import plotly.express as px
 from prophet import Prophet
-
-from libInternal import variableDump, getConnection, setFileLocation
+from libInternal import variableDump, getConnection, setFileLocation, cleanYear
 
 
 fileTimeStamp, output_dir = setFileLocation()
 conn = getConnection()
-df = pd.read_sql("SELECT * FROM emmisions;", conn)
+df_targetYear = pd.read_sql("SELECT * FROM emmisions;", conn)
+df_targetYear['latitude'] = df_targetYear['latitude'].astype(float)
+df_targetYear['longitude'] = df_targetYear['longitude'].astype(float)
+df_targetYear['report_year'] = df_targetYear['report_year'].apply(cleanYear)
 
-# ------------- heat map distribution
-df = df.dropna(subset=['latitude','longitude','report_year'])
-df['latitude'] = df['latitude'].astype(float)
-df['longitude'] = df['longitude'].astype(float)
-
-heatMapRender = folium.Map(location=[-6.200000, 106.816666], zoom_start=4)
-
-heatData = df[['latitude', 'longitude']].dropna().values.tolist()
-HeatMap(
-    heatData,
-    min_opacity=0.3,
-    radius=10,
-    blur=15,
-    max_zoom=1,
-).add_to(heatMapRender)
-
-fileMapName = os.path.join(output_dir, f"heatMapRender_{fileTimeStamp}.html")
-heatMapRender.save(fileMapName)
-
-print(f"\n✅ Finish Map Render → {fileMapName}\n")
-webbrowser.open(fileMapName)
-
-
-# heat forecast
-def clean_year(val):
-    if pd.isna(val):
-        return None
-    val = str(val)
-    if "/" in val:
-        return int(val.split("/")[1])
-    return int(val)
-
-df['report_year'] = df['report_year'].apply(clean_year)
-
-future_years = 10
-forecast_target_year = 2030
+future_years = 15
+forecast_target_year = 2031
 forecast_data = []
 
-for (lat, lon), group in df.groupby(['latitude','longitude']):
+for (lat, lon), group in df_targetYear.groupby(['latitude','longitude']):
     if len(group['report_year'].unique()) >= 4:
 
         # count record per year
@@ -60,7 +28,7 @@ for (lat, lon), group in df.groupby(['latitude','longitude']):
         ts['ds'] = pd.to_datetime(ts['ds'], format='%Y')
         
         # fit model
-        model = Prophet(yearly_seasonality=False, daily_seasonality=False, weekly_seasonality=False)
+        model = Prophet(yearly_seasonality=True, daily_seasonality=False, weekly_seasonality=False)
         model.fit(ts)
 
         # buat future frame
@@ -76,7 +44,7 @@ for (lat, lon), group in df.groupby(['latitude','longitude']):
             forecast_data.append([lat, lon, max(y_pred,0)])  # no negative
             
 
-heatMapForecast = folium.Map(location=[-6.200000, 106.816666], zoom_start=5)
+heatMapForecast = folium.Map(location=[-26.853388, 133.275154], zoom_start=5)
 
 HeatMap(
     forecast_data,

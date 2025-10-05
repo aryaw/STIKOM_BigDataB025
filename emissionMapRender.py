@@ -18,7 +18,7 @@ df = df.dropna(subset=['latitude','longitude','report_year'])
 df['latitude'] = df['latitude'].astype(float)
 df['longitude'] = df['longitude'].astype(float)
 
-mapRender = folium.Map(location=[-6.200000, 106.816666], zoom_start=6)
+mapRender = folium.Map(location=[-26.853388, 133.275154], zoom_start=6)
 mapCluster = MarkerCluster().add_to(mapRender)
 
 for row in df.itertuples(index=False):

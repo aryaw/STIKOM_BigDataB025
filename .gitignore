@@ -1,3 +1,4 @@
 db/*
 .env
 assets/*.html
+libInternal/__pycache__/*.pyc

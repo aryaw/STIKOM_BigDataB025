@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+import pandas as pd
 
 def variableDump(var, name="var", indent=0, show_id=False):
     spacing = "  " * indent
@@ -28,3 +29,11 @@ def setFileLocation():
     os.makedirs(output_dir, exist_ok=True)
 
     return fileTimeStamp, output_dir
+
+def cleanYear(val):
+    if pd.isna(val):
+        return None
+    val = str(val)
+    if "/" in val:
+        return int(val.split("/")[1])
+    return int(val)

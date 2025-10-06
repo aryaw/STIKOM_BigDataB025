@@ -28,7 +28,7 @@ else:
 
 print(f"\n Data prepared: {len(df)} records, {df['year'].min()}–{df['year'].max()} range\n")
 
-train_cutoff = df['year'].quantile(0.8)  # 80% of years for training
+train_cutoff = df['year'].quantile(0.8)
 train = df[df['year'] <= train_cutoff]
 test  = df[df['year'] > train_cutoff]
 
@@ -71,7 +71,7 @@ merged_prophet = pd.merge(
     on=['latitude','longitude','year'], how='inner'
 )
 
-# XGBoost (global regression)
+# XGBoost
 print("\n⚡ Training XGBoost...")
 start_xgb = time.time()
 X_train = train[['year','latitude','longitude']]
@@ -113,7 +113,6 @@ print("\n MODEL PERFORMANCE COMPARISON")
 print(f"Prophet → MAE={mae_prophet:.3f}, RMSE={rmse_prophet:.3f}")
 print(f"XGBoost → MAE={mae_xgb:.3f}, RMSE={rmse_xgb:.3f}")
 
-# Visualization (sample location)
 sample_loc = df.groupby(['latitude','longitude']).size().idxmax()
 lat_sample, lon_sample = sample_loc
 

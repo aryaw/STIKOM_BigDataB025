@@ -64,9 +64,9 @@ fig = px.scatter_3d(
     x='longitude',
     y='latitude',
     z='count',
-    color='lisst cluster',
+    color='cluster_label',
     hover_data=['report_year', 'count'],
-    title=f"DBSCAN algo hasil: ({n_clusters} clusters + noise)",
+    title=f"DBSCAN Clusters ({n_clusters} clusters + noise)",
     width=900, height=700
 )
 
